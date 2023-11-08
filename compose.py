@@ -22,7 +22,7 @@ def get_words_from_text(text_path):
 
         # remove [verse 1: artist]
         # include the following line if you are doing song lyrics
-        # text = re.sub(r'\[(.+)\]', ' ', text)
+        text = re.sub(r'\[(.+)\]', ' ', text)
 
         text = ' '.join(text.split())
         text = text.lower()
@@ -57,21 +57,27 @@ def make_graph(words):
 
 def compose(g, words, length=50):
     composition = []
+    # I choose randomly the first word!
     word = g.get_vertex(random.choice(words))
     for _ in range(length):
         composition.append(word.value)
         word = g.get_next_word(word)
 
     return composition
+# poesie
+# def main():
 
+# canzoni
+def main(artist):
+    # poesie
+    # words = get_words_from_text('texts/hp_sorcerer_stone.txt')
 
-def main():
-    words = get_words_from_text('texts/hp_sorcerer_stone.txt')
-
-    # for song in os.listdir('songs/{}'.format(artist)):
-        # if song == '.DS_Store':
-        #     continue
-        # words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
+    # canzoni
+    words = []
+    for song in os.listdir('songs/{}'.format(artist)):
+        if song == '.DS_Store':
+            continue
+        words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
         
     g = make_graph(words)
     composition = compose(g, words, 100)
@@ -79,4 +85,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # Poesie
+    # print(main())
+    # Canzoni
+    print(main('taylor_swift'))
