@@ -15,24 +15,29 @@ import re
 import string
 import random
 from graph import Graph, Vertex
+from web_scraper import Pagina_Repubblica
+from get_words import get_words_from_text
 
-def get_words_from_text(text_path):
-    with open(text_path, 'rb') as file:
-        text = file.read().decode("utf-8") 
-
-        # remove [verse 1: artist]
-        # include the following line if you are doing song lyrics
-        text = re.sub(r'\[(.+)\]', ' ', text)
-
-        text = ' '.join(text.split())
-        text = text.lower()
-        text = text.translate(str.maketrans('', '', string.punctuation))
-
-    words = text.split()
-
-    words = words[:1000]
-
-    return words
+# def get_words_from_text(text_path):
+#     with open(text_path, 'rb') as file:
+#         # web ( e forse anche non web)
+#         text = file.read().decode("latin-1")
+#         # non-web
+#         # text = file.read().decode("utf-8")
+#
+#         # remove [verse 1: artist]
+#         # include the following line if you are doing song lyrics
+#         text = re.sub(r'\[(.+)\]', ' ', text)
+#
+#         text = ' '.join(text.split())
+#         text = text.lower()
+#         text = text.translate(str.maketrans('', '', string.punctuation))
+#
+#     words = text.split()
+#
+#     words = words[:1000]
+#
+#     return words
 
 
 def make_graph(words):
@@ -55,7 +60,7 @@ def make_graph(words):
     
     return g
 
-def compose(g, words, length=50):
+def compose(g, words, length=100):
     composition = []
     # I choose randomly the first word!
     word = g.get_vertex(random.choice(words))
@@ -65,27 +70,37 @@ def compose(g, words, length=50):
 
     return composition
 # poesie
-# def main():
+def main():
 
 # canzoni
-def main(artist):
+# def main(artist):
     # poesie
     # words = get_words_from_text('texts/hp_sorcerer_stone.txt')
 
     # canzoni
-    words = []
-    for song in os.listdir('songs/{}'.format(artist)):
-        if song == '.DS_Store':
-            continue
-        words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
-        
+    # words = []
+    # for song in os.listdir('songs/{}'.format(artist)):
+    #     if song == '.DS_Store':
+    #         continue
+    #     words.extend(get_words_from_text('songs/{artist}/{song}'.format(artist=artist, song=song)))
+
+    # web
+    # web scraping
+    news = "https://www.repubblica.it/la-zampa/2023/11/01"
+    my_news = "/news/deserto_pesci_vivono_100_anni-419333274/?utm_source=pocket-newtab-it-it"
+    pg_rep = Pagina_Repubblica(news, my_news)
+    _ = pg_rep.art_scraper()
+    words = get_words_from_text('webtext/webtextstring.txt')
+
+
+
     g = make_graph(words)
-    composition = compose(g, words, 100)
+    composition = compose(g, words, 500)
     print(' '.join(composition))
 
 
 if __name__ == '__main__':
-    # Poesie
-    # print(main())
+    # Poesie, web
+    print(main())
     # Canzoni
-    print(main('taylor_swift'))
+    # print(main('taylor_swift'))
